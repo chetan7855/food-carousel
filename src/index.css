@@ -1,0 +1,179 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+body{
+margin:0;
+font-family:sans-serif;
+
+background:linear-gradient(
+135deg,
+#f5eee6,
+#efe4d8,
+#e6d6c5
+);
+
+min-height:100vh;
+overflow-x:hidden;
+}
+
+
+.glass-hero{
+
+background: rgba(255,255,255,0.25);
+
+backdrop-filter: blur(25px);
+
+-webkit-backdrop-filter: blur(25px);
+
+border:1px solid rgba(255,255,255,0.4);
+
+border-radius:35px;
+
+box-shadow:
+0 10px 40px rgba(0,0,0,0.15);
+
+transform:translateY(-10px);
+
+}
+
+
+nav li{
+cursor:pointer;
+position:relative;
+transition:0.3s;
+}
+
+nav li::after{
+
+content:"";
+
+position:absolute;
+
+bottom:-5px;
+
+left:0;
+
+width:0%;
+
+height:2px;
+
+background:#f97316;
+
+transition:0.3s;
+
+}
+
+nav li:hover::after{
+width:100%;
+}
+
+
+@keyframes float {
+
+0%{transform:translateY(0px);}
+
+50%{transform:translateY(-12px);}
+
+100%{transform:translateY(0px);}
+
+}
+
+.float{
+animation: float 4s ease-in-out infinite;
+}
+
+
+.reveal{
+opacity:0;
+transform:translateY(40px);
+transition:1s;
+}
+
+.reveal.active{
+opacity:1;
+transform:translateY(0px);
+}
+
+
+.blob{
+
+position:absolute;
+
+width:400px;
+
+height:400px;
+
+background:radial-gradient(circle,#f97316,#ffb347);
+
+filter:blur(120px);
+
+opacity:0.25;
+
+z-index:-1;
+
+animation:blobmove 10s infinite alternate;
+
+}
+
+.blob2{
+
+right:0;
+top:200px;
+
+background:radial-gradient(circle,#f97316,#ff7a18);
+
+}
+
+@keyframes blobmove{
+
+0%{
+transform:translate(0,0);
+}
+
+100%{
+transform:translate(100px,-50px);
+}
+
+}
+
+.navbar{
+
+transition: transform 0.35s ease;
+
+}
+
+.glass-card{
+
+padding:40px;
+transform:translateY(-20px);    
+
+background: rgba(255,255,255,0.35);
+
+backdrop-filter: blur(25px);
+
+-webkit-backdrop-filter: blur(25px);
+
+border:1px solid rgba(255,255,255,0.4);
+
+border-radius:25px;
+
+box-shadow:0 10px 40px rgba(0,0,0,0.2);
+
+}
+
+
+.glass-popup{
+
+background: rgba(255,255,255,0.45);
+
+backdrop-filter: blur(30px);
+
+border-radius:20px;
+
+box-shadow:0 10px 40px rgba(0,0,0,0.25);
+
+min-width:320px;
+
+}
