@@ -1,24 +1,55 @@
-import {Routes,Route} from "react-router-dom"
+import { Routes, Route, useLocation } from "react-router-dom"
+import { AnimatePresence } from "framer-motion"
+import { useState, useEffect } from "react"
 import Home from "./pages/Home"
 import Cart from "./pages/Cart"
+import Login from "./pages/Login"
+import Signup from "./pages/Signup"
+import Navbar from "./components/Navbar"
+import ProtectedRoute from "./components/ProtectedRoute"
 
-function App(){
+const AUTH_PATHS = ["/login", "/signup"]
 
-return(
+function App() {
+  const location = useLocation();
+  const [darkMode, setDarkMode] = useState(false);
+  const isAuthPage = AUTH_PATHS.includes(location.pathname);
 
-<div className="min-h-screen bg-gradient-to-b from-[#f6efe7] to-[#efe4d8]">
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [darkMode]);
 
-<Routes>
+  return (
+    <div className="relative min-h-screen overflow-hidden">
+      {/* Animated Background Blobs — hidden on auth pages */}
+      {!isAuthPage && (
+        <div className="fixed inset-0 pointer-events-none z-[-1] overflow-hidden">
+          <div className="blob blob-1"></div>
+          <div className="blob blob-2"></div>
+          <div className="blob blob-3"></div>
+        </div>
+      )}
 
-<Route path="/" element={<Home/>}/>
-<Route path="/cart" element={<Cart/>}/>
+      {/* Navbar hidden on auth pages */}
+      {!isAuthPage && <Navbar darkMode={darkMode} setDarkMode={setDarkMode} />}
 
-</Routes>
+      <AnimatePresence mode="wait">
+        <Routes location={location} key={location.pathname}>
+          {/* Public auth routes */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
 
-</div>
-
-)
-
+          {/* Protected app routes */}
+          <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+          <Route path="/cart" element={<ProtectedRoute><Cart /></ProtectedRoute>} />
+        </Routes>
+      </AnimatePresence>
+    </div>
+  )
 }
 
 export default App

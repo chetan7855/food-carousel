@@ -1,55 +1,95 @@
 import { useState, useEffect } from "react"
 import { dishes } from "../data/dishes"
-import { motion } from "framer-motion"
+import { motion, AnimatePresence } from "framer-motion"
 
 export default function DishCarousel({ setDish }) {
+  const [index, setIndex] = useState(0)
+  const [direction, setDirection] = useState(1) // 1 for right, -1 for left
 
-const [index,setIndex] = useState(0)
+  useEffect(() => {
+    setDish(dishes[index])
+  }, [index, setDish])
 
-useEffect(()=>{
-setDish(dishes[index])
-},[index])
+  const nextDish = () => {
+    setDirection(1)
+    setIndex((prev) => (prev + 1) % dishes.length)
+  }
 
-const nextDish=()=>{
-setIndex((prev)=>(prev+1)%dishes.length)
-}
+  const prevDish = () => {
+    setDirection(-1)
+    setIndex((prev) => (prev - 1 + dishes.length) % dishes.length)
+  }
 
-const prevDish=()=>{
-setIndex((prev)=>(prev-1+dishes.length)%dishes.length)
-}
+  const variants = {
+    enter: (direction) => {
+      return {
+        x: direction > 0 ? 100 : -100,
+        opacity: 0,
+        scale: 0.8,
+        rotate: direction > 0 ? 45 : -45
+      }
+    },
+    center: {
+      zIndex: 1,
+      x: 0,
+      opacity: 1,
+      scale: 1,
+      rotate: 0
+    },
+    exit: (direction) => {
+      return {
+        zIndex: 0,
+        x: direction < 0 ? 100 : -100,
+        opacity: 0,
+        scale: 0.8,
+        rotate: direction < 0 ? 45 : -45
+      }
+    }
+  }
 
-return(
+  return (
+    <div className="relative w-full max-w-[400px] aspect-square flex items-center justify-center">
+      {/* Outer Glow Ring */}
+      <div className="absolute inset-4 rounded-full border border-white/20 shadow-[0_0_50px_rgba(249,115,22,0.15)] animate-pulse pointer-events-none"></div>
 
-<div className="relative w-[450px] h-[450px] flex items-center justify-center">
+      <AnimatePresence initial={false} custom={direction}>
+        <motion.img
+          key={index}
+          src={dishes[index].image}
+          custom={direction}
+          variants={variants}
+          initial="enter"
+          animate="center"
+          exit="exit"
+          transition={{
+            x: { type: "spring", stiffness: 300, damping: 30 },
+            opacity: { duration: 0.2 },
+            rotate: { duration: 0.5, ease: "easeOut" }
+          }}
+          className="absolute w-[80%] object-contain drop-shadow-2xl"
+          alt={dishes[index].name}
+        />
+      </AnimatePresence>
 
-<motion.img
-key={dishes[index].image}
-src={dishes[index].image}
-className="w-[300px] float"
-initial={{scale:0.7,opacity:0}}
-animate={{scale:1,opacity:1}}
-transition={{duration:0.5}}
-/>
+      <div className="absolute inset-0 flex items-center justify-between pointer-events-none">
+        <motion.button
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+          onClick={prevDish}
+          className="pointer-events-auto -ml-4 w-12 h-12 flex items-center justify-center rounded-full glass-panel text-2xl shadow-lg hover:shadow-glow transition-shadow z-10 text-slate-800 dark:text-white"
+        >
+          ←
+        </motion.button>
 
-<button
-onClick={prevDish}
-className="absolute left-[-40px] bg-white/40 backdrop-blur-md shadow-xl rounded-full px-4 py-2 text-xl hover:scale-110 transition"
->
-
-←
-
-</button>
-
-<button
-onClick={nextDish}
-className="absolute right-[-40px] bg-white/40 backdrop-blur-md shadow-xl rounded-full px-4 py-2 text-xl hover:scale-110 transition"
->
-
-→
-
-</button>
-
-</div>
-
-)
+        <motion.button
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+          onClick={nextDish}
+          className="pointer-events-auto -mr-4 w-12 h-12 flex items-center justify-center rounded-full glass-panel text-2xl shadow-lg hover:shadow-glow transition-shadow z-10 text-slate-800 dark:text-white"
+        >
+          →
+        </motion.button>
+      </div>
+    </div>
+  )
 }
